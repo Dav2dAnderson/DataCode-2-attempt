@@ -9,6 +9,7 @@ from .serializers import CourseSerializer, CourseDetailSerializer
 # Create your views here.
 
 
+""" ViewSet for Courses """
 class CourseViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Course.objects.all()
@@ -38,5 +39,21 @@ class CourseViewSet(viewsets.ModelViewSet):
             return CourseSerializer
         return CourseDetailSerializer
     
-    
+
+""" ViewSet for Modules """
+class ModuleViewSet(viewsets.ModelViewSet):
+    pass
+
+
+""" ViewSet for Lessons """
+class LessonViewSet(viewsets.ModelViewSet):
+    pass
+
+
+""" ViewSet for files """
+class LessonFilesViewSet(viewsets.ModelViewSet):
+    pass
+
+
+ 
 
