@@ -47,6 +47,14 @@ class Testemonials(models.Model):
         verbose_name_plural = 'Testemonials'
 
 
+class BlacklistedAccessToken(models.Model):
+    token = models.CharField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.token
+
+
 class Notification(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     content = models.TextField()
@@ -58,4 +66,3 @@ class Notification(models.Model):
     class Meta:
         verbose_name = 'Notification'
         verbose_name_plural = 'Notifications'
-        
