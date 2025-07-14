@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CustomRole, CustomUser, Notification, Testemonials
+from .models import CustomRole, CustomUser, Notification, Testemonials, BlacklistedAccessToken
 
 # Register your models here.
 
@@ -25,3 +25,6 @@ class TestemonialsAdmin(admin.ModelAdmin):
     list_display = ['user']
 
 
+@admin.register(BlacklistedAccessToken)
+class BlackListedAdmin(admin.ModelAdmin):
+    list_display = ['token']
