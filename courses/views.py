@@ -1,11 +1,14 @@
 from django.shortcuts import render
+from django.http import FileResponse, Http404
 
-from rest_framework import viewsets, status, permissions
+from rest_framework import viewsets, status, permissions, views
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
-from .models import Course
-from .serializers import CourseSerializer, CourseDetailSerializer
+from .models import Course, Modules, Lesson, LessonFile
+from .serializers import CourseSerializer, CourseDetailSerializer, ModuleSerializer, LessonSerializer, LessonDetailSerializer, LessonFilesSerializer
+
+import os
 # Create your views here.
 
 
@@ -42,18 +45,39 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 """ ViewSet for Modules """
 class ModuleViewSet(viewsets.ModelViewSet):
-    pass
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Modules.objects.all()
+    serializer_class = ModuleSerializer
+    lookup_field = 'slug'
 
 
 """ ViewSet for Lessons """
 class LessonViewSet(viewsets.ModelViewSet):
-    pass
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Lesson.objects.all()
+    lookup_field = 'slug'
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return LessonSerializer
+        return LessonDetailSerializer
 
 
 """ ViewSet for files """
 class LessonFilesViewSet(viewsets.ModelViewSet):
-    pass
+    # permission_classes = [permissions.IsAuthenticated]
+    queryset = LessonFile.objects.all()
+    serializer_class = LessonFilesSerializer
 
 
- 
-
+class DownloadLessonFileView(views.APIView):
+    def get(self, request, pk):
+        try:
+            lesson_file = LessonFile.objects.get(pk=pk)
+            file_path = lesson_file.file.path
+            if os.path.exists(file_path):
+                return FileResponse(open(file_path, 'rb'), as_attachment=True)
+            raise Http404("File not found.")
+        except LessonFile.DoesNotExist:
+            raise Http404("File not found.")
+        

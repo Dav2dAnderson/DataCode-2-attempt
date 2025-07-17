@@ -5,7 +5,7 @@ from rest_framework.authentication import get_user_model
 
 from .models import CustomRole
 
-from courses.models import Course
+# from courses.models import Course
 from courses.serializers import CourseSerializer
 
 
