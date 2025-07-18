@@ -79,6 +79,7 @@ class Lesson(models.Model):
             self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
 
+
     class Meta:
         ordering = ['title']
         verbose_name = "Lesson "
@@ -95,3 +96,12 @@ class LessonFile(models.Model):
     class Meta:
         verbose_name = "Lesson File "
         verbose_name_plural = "Lesson Files"
+
+
+class CourseEnrollment(models.Model):
+    user = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE, related_name='enrollments')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
+    enrolled_date = models.DateField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ['user', 'course']

@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 
 from .models import Course, Modules, Lesson, LessonFile
 from .serializers import CourseSerializer, CourseDetailSerializer, ModuleSerializer, LessonSerializer, LessonDetailSerializer, LessonFilesSerializer
+from .permissions import IsRegisteredToCourse
 
 import os
 # Create your views here.
@@ -65,7 +66,7 @@ class LessonViewSet(viewsets.ModelViewSet):
 
 """ ViewSet for files """
 class LessonFilesViewSet(viewsets.ModelViewSet):
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsRegisteredToCourse]
     queryset = LessonFile.objects.all()
     serializer_class = LessonFilesSerializer
 

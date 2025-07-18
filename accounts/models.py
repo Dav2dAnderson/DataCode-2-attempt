@@ -16,7 +16,7 @@ class CustomUser(AbstractUser):
     picture = models.ImageField(upload_to='user_pictures/', null=True, blank=True)
     phone_number = models.CharField(max_length=13, null=True, blank=True)
     role = models.ForeignKey(CustomRole, on_delete=models.SET_NULL, null=True)
-    courses = models.ManyToManyField("courses.Course", related_name='courses', blank=True)
+    courses = models.ManyToManyField("courses.Course", related_name='students', blank=True)
     tg_account = models.URLField(null=True, blank=True)
     blog = models.URLField(null=True, blank=True)
     city = models.CharField(max_length=50, null=True, blank=True)

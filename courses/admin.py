@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Course, Lesson, LessonFile, Modules
+from .models import Course, Lesson, LessonFile, Modules, CourseEnrollment
 # Register your models here.
 
 
@@ -22,3 +22,8 @@ class LessonAdmin(admin.ModelAdmin):
 @admin.register(Modules)
 class ModuleAdmin(admin.ModelAdmin):
     list_display = ['course', 'name', 'created_at', 'updated_at']
+
+
+@admin.register(CourseEnrollment)
+class EnrollmentAdmin(admin.ModelAdmin):
+    list_display = ['user', 'course', 'enrolled_date']
