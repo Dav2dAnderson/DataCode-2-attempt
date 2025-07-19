@@ -71,3 +71,10 @@ class CustomUserRegistrationSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
+
+
+# class UserCourseSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = "courses.Course"
+#         fields = ['id', 'name', 'teacher', 'is_active']
+    

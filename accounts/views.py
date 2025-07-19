@@ -65,3 +65,5 @@ class UserLogOutView(views.APIView):
             BlacklistedAccessToken.objects.create(token=access)
 
         return Response({'message': 'Logged Out.'}, status=status.HTTP_200_OK)
+
+

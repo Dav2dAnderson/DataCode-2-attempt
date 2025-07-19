@@ -66,7 +66,7 @@ class LessonViewSet(viewsets.ModelViewSet):
 
 """ ViewSet for files """
 class LessonFilesViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated, IsRegisteredToCourse]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = LessonFile.objects.all()
     serializer_class = LessonFilesSerializer
 
