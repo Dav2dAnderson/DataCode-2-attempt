@@ -11,6 +11,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class LessonDetailSerializer(serializers.ModelSerializer):
     lesson_files = serializers.SerializerMethodField()
+
     class Meta:
         model = Lesson
         fields = ['title', 'description', 'module', 'is_active', 'created_at', 'updated_at', 'lesson_files']
@@ -31,7 +32,8 @@ class LessonFilesSerializer(serializers.ModelSerializer):
 
 
 class LessonSerializer(serializers.ModelSerializer):
-    # lesson_files = LessonFilesSerializer(many=True, read_only=True)
+    lesson_files = serializers.SerializerMethodField()
+
     class Meta:
         model = Lesson
         fields = ['title', 'slug', 'module', 'lesson_files']
@@ -47,6 +49,7 @@ class LessonSerializer(serializers.ModelSerializer):
 class ModuleSerializer(serializers.ModelSerializer):
     course = serializers.CharField(source='course.name', read_only=True)
     lessons = LessonSerializer(many=True, read_only=True)
+
     class Meta:
         model = Modules
         fields = ['name', 'course', 'file', 'lessons']
@@ -55,7 +58,8 @@ class ModuleSerializer(serializers.ModelSerializer):
 class CourseDetailSerializer(serializers.ModelSerializer):
     teacher = serializers.CharField(source='teacher.username', read_only=True)
     modules = ModuleSerializer(many=True, read_only=True)
+
     class Meta:
         model = Course
-        fields = ['id', 'name', 'slug', 'description', 'price', 'created_at', 'image', 'teacher_id', 'teacher', 'modules']
-
+        fields = ['id', 'name', 'slug', 'description', 'price', 'created_at', 'image', 'teacher_id', 'teacher',
+                  'modules']
