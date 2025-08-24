@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from .models import Course, Modules, Lesson, LessonFile
 from .serializers import CourseSerializer, CourseDetailSerializer, ModuleSerializer, LessonSerializer, \
     LessonDetailSerializer, LessonFilesSerializer
-from .permissions import IsRegisteredToCourse
+from .permissions import IsRegisteredToCourse, IsAdminOrReadOnly, IsEmployeeOrReadOnly
 
 import os
 
@@ -19,7 +19,7 @@ import os
 
 
 class CourseViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     lookup_field = 'slug'
@@ -54,7 +54,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class ModuleViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsEmployeeOrReadOnly]
     queryset = Modules.objects.all()
     serializer_class = ModuleSerializer
     lookup_field = 'slug'

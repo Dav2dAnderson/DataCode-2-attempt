@@ -12,3 +12,17 @@ class IsRegisteredToCourse(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return course.students.filter(id=user.id).exists()
         return False
+    
+
+class IsAdminOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user and request.user.is_staff
+    
+
+class IsEmployeeOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user and request.user.role.role == 'teacher'

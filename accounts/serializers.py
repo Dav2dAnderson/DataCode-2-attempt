@@ -28,7 +28,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class ProfileSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'phone_number', 'email', 'biography', 'city', 'blog',
+        fields = ['id', 'username', 'first_name', 'last_name', 'phone_number', 'email', 'biography', 'birth_date', 'city', 'blog',
                   'tg_account']
 
 
@@ -37,7 +37,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'phone_number', 'biography', 'courses']
+        fields = ['id', 'username', 'first_name', 'last_name', 'phone_number', 'picture', 'biography', 'birth_date', 'city', 'blog', 'tg_account', 'courses']
 
     def get_courses(self, obj):
         courses = obj.courses.all()

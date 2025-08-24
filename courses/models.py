@@ -44,7 +44,7 @@ class Modules(models.Model):
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="modules")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="modules", null=True, blank=True)
 
     def __str__(self):
         return self.name

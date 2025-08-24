@@ -6,7 +6,7 @@ from .models import Course, Modules, Lesson, LessonFile
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ['id', 'name', 'slug', 'price', 'image']
+        fields = ['id', 'name', 'slug', 'price', 'image', 'teacher']
 
 
 class LessonDetailSerializer(serializers.ModelSerializer):
@@ -47,12 +47,12 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class ModuleSerializer(serializers.ModelSerializer):
-    course = serializers.CharField(source='course.name', read_only=True)
+    course_name = serializers.CharField(source='course.name', read_only=True)
     lessons = LessonSerializer(many=True, read_only=True)
 
     class Meta:
         model = Modules
-        fields = ['name', 'course', 'file', 'lessons']
+        fields = ['name', 'course', 'course_name', 'file', 'lessons']
 
 
 class CourseDetailSerializer(serializers.ModelSerializer):
