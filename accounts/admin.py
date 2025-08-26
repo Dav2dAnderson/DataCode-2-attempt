@@ -17,7 +17,7 @@ class CustomRoleAdmin(admin.ModelAdmin):
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
-    list_display = ['user']
+    list_display = ['user', 'date']
 
 
 @admin.register(Testemonials)

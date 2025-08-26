@@ -3,7 +3,9 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from rest_framework.authentication import get_user_model
 
-from .models import CustomRole
+from django.contrib.auth import authenticate
+
+from .models import CustomRole, Notification
 
 # from courses.models import Course
 from courses.serializers import CourseSerializer
@@ -71,8 +73,35 @@ class CustomUserRegistrationSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+    
 
-# class UserCourseSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = "courses.Course"
-#         fields = ['id', 'name', 'teacher', 'is_active']
+class CustomUserPasswordResetSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    current_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+
+
+    def validate(self, attrs):
+        username = attrs.get("username")
+        current_password = attrs.get("current_password")
+
+        user = authenticate(username=username, password=current_password)
+        if not user:
+            raise serializers.ValidationError("Invalid username or password")
+
+        attrs["user"] = user
+        return attrs
+
+    def save(self, **kwargs):
+        user = self.validated_data["user"]
+        user.set_password(self.validated_data["new_password"])
+        user.save()
+        return user
+
+
+class UserNotificationsSerializer(serializers.ModelSerializer):
+    user = UserProfileSerializer(read_only=True)
+    class Meta:
+        model = Notification
+        fields = ['id', 'user', 'content', 'date']
+

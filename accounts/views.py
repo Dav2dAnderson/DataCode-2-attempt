@@ -6,9 +6,9 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import BlacklistedAccessToken
+from .models import BlacklistedAccessToken, Notification
 from .serializers import MyTokenObtainPairSerializer, ProfileSettingsSerializer, UserProfileSerializer, \
-    CustomUserRegistrationSerializer
+    CustomUserRegistrationSerializer, UserNotificationsSerializer, CustomUserPasswordResetSerializer
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -54,7 +54,6 @@ class UserRegistrationView(views.APIView):
 
 
 class UserLogOutView(views.APIView):
-
     def post(self, request):
         refresh_token = request.data.get('refresh')
         token = RefreshToken(refresh_token)
@@ -68,3 +67,30 @@ class UserLogOutView(views.APIView):
         return Response({'message': 'Logged Out.'}, status=status.HTTP_200_OK)
 
 
+class UserResetPasswordView(views.APIView):
+    def post(self, request):
+        serializer = CustomUserPasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message", "Password updated successfully"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+""" User Notifications """
+class UserNotifications(views.APIView):
+    def get(self, request, pk=None):
+        if pk is None:
+            notifications = Notification.objects.all()
+            serializer = UserNotificationsSerializer(notifications, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            try:
+                notification = Notification.objects.get(id=pk)
+            except Notification.DoesNotExist:
+                return Response({'detail': "Not found"}, status=status.HTTP_404_NOT_FOUND)
+            
+            serializer = UserNotificationsSerializer(notification)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+    
