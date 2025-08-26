@@ -42,7 +42,6 @@ class UserProfileView(views.APIView):
 
 
 class UserRegistrationView(views.APIView):
-
     def post(self, request):
         serializer = CustomUserRegistrationSerializer(data=request.data)
         if serializer.is_valid():

@@ -82,6 +82,12 @@ class LessonFilesViewSet(viewsets.ModelViewSet):
     queryset = LessonFile.objects.all()
     serializer_class = LessonFilesSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        return LessonFile.objects.filter(
+            lesson__module__course__in=user.courses.all()
+        )
+
 
 class DownloadLessonFileView(views.APIView):
     def get(self, request, pk):
