@@ -19,7 +19,6 @@ def after_course_created(sender, instance, created, **kwargs):
 
 @receiver(post_delete, sender=Course)
 def after_course_deleted(sender, instance, **kwargs):
-    print("====================\nSalom. Platforma'dan kurs olib tashlandi.\n====================")
     notifications = []
     notification = "Platforma'dan kurs olib tashlandi"
     for user_id in CustomUser.objects.all():

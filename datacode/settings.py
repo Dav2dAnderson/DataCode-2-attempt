@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     'accounts',
     'courses',
+    'messanger',
 
     'rest_framework',
     'rest_framework_simplejwt',
@@ -175,7 +176,7 @@ LOGGING = {
         },
     },
 
-    # Handlerlar
+    # Handlers
     'handlers': {
         'console': {
             'level': 'DEBUG',
@@ -196,7 +197,7 @@ LOGGING = {
         },
     },
 
-    # Loggerlar
+    # Loggers
     'loggers': {
         'django': {
             'handlers': ['console', 'file'],
@@ -208,7 +209,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
-        'accounts': {  # Sen o'zingni app nomini yozasan
+        'accounts': { 
             'handlers': ['console', 'file', 'error_file'],
             'level': 'DEBUG',
             'propagate': False,

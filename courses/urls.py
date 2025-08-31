@@ -14,6 +14,6 @@ router.register('lesson_files', LessonFilesViewSet, basename='lesson_files')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('lesson-file/download/<int:pk>/', DownloadLessonFileView.as_view(), name='lesson-file-download')
+    path('lesson_files/download/<int:pk>/', DownloadLessonFileView.as_view(), name='lesson-file-download')
 ]
 
