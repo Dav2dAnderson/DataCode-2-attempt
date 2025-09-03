@@ -9,7 +9,7 @@ from accounts.models import CustomUser
 class Chat(models.Model):
     chat_title = models.CharField(max_length=50)
     slug = models.SlugField(unique=True, max_length=55, null=True, blank=True)
-    participants = models.ManyToManyField(CustomUser, related_name='participants')
+    participants = models.ManyToManyField(CustomUser, related_name='chats')
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
