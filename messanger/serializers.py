@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Chat, Messages
 
 from accounts.models import CustomUser
+from accounts.serializers import UserProfileSerializer
 
 
 class ChatParticipantsSerializer(serializers.ModelSerializer):
@@ -27,6 +28,7 @@ class ChatRetrieveSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    user = UserProfileSerializer(read_only=True)
     class Meta:
         model = Messages
         fields = ['chat', 'user', 'message']
