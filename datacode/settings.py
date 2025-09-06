@@ -56,8 +56,11 @@ REST_AUTH = {
     'USE_JWT': True,
     'JWT_AUTH_COOKIE': 'my-app-auth',
     'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-token',
+    
+    # serializers
+    'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailSerializer',
+    'PASSWORD_CHANGE_SERIALIZER': 'accounts.serializers.CustomUserPasswordChangeSerializer',
 }
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

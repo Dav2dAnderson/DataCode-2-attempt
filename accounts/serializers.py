@@ -10,6 +10,9 @@ from .models import CustomRole, Notification
 # from courses.models import Course
 from courses.serializers import CourseSerializer
 
+""" dj-rest-auth classes """
+from dj_rest_auth.serializers import UserDetailsSerializer, PasswordChangeSerializer
+
 User = get_user_model()
 
 
@@ -27,23 +30,44 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
 
-class ProfileSettingsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'phone_number', 'email', 'biography', 'birth_date', 'city', 'blog',
-                  'tg_account']
+""" dj-rest-auth override """
 
-
-class UserProfileSerializer(serializers.ModelSerializer):
+class CustomUserDetailSerializer(UserDetailsSerializer):
     courses = serializers.SerializerMethodField()
 
-    class Meta:
+    class Meta(UserDetailsSerializer.Meta):
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'phone_number', 'picture', 'biography', 'birth_date', 'city', 'blog', 'tg_account', 'courses']
+        fields = UserDetailsSerializer.Meta.fields + (
+            'pk',
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'phone_number',
+            'email',
+            'biography',
+            'city',
+            'blog',
+            'tg_account',
+            'courses',
+        )
+        read_only_fields = ('email', )
 
     def get_courses(self, obj):
         courses = obj.courses.all()
         return CourseSerializer(courses, many=True).data
+
+
+class CustomUserPasswordChangeSerializer(PasswordChangeSerializer):
+    current_password = serializers.CharField(required=True)
+
+    def validate_current_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Current password is incorrect")
+        return value
+""" """
+
 
 
 class CustomUserRegistrationSerializer(serializers.ModelSerializer):
@@ -73,34 +97,10 @@ class CustomUserRegistrationSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
-    
-
-class CustomUserPasswordResetSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    current_password = serializers.CharField(write_only=True)
-    new_password = serializers.CharField(write_only=True)
-
-
-    def validate(self, attrs):
-        username = attrs.get("username")
-        current_password = attrs.get("current_password")
-
-        user = authenticate(username=username, password=current_password)
-        if not user:
-            raise serializers.ValidationError("Invalid username or password")
-
-        attrs["user"] = user
-        return attrs
-
-    def save(self, **kwargs):
-        user = self.validated_data["user"]
-        user.set_password(self.validated_data["new_password"])
-        user.save()
-        return user
 
 
 class UserNotificationsSerializer(serializers.ModelSerializer):
-    user = UserProfileSerializer(read_only=True)
+    user = UserDetailsSerializer(read_only=True)
     class Meta:
         model = Notification
         fields = ['id', 'user', 'content', 'date']
