@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'accounts',
     'courses',
@@ -50,7 +51,13 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 
     'dj_rest_auth',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
 ]
+
+SITE_ID = 1
 
 REST_AUTH = {
     'USE_JWT': True,
@@ -60,6 +67,7 @@ REST_AUTH = {
     # serializers
     'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailSerializer',
     'PASSWORD_CHANGE_SERIALIZER': 'accounts.serializers.CustomUserPasswordChangeSerializer',
+    'REGISTER_SERIALIZER': 'accounts.serializers.CustomUserRegistrationSerializer',
 }
 
 MIDDLEWARE = [
@@ -69,8 +77,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'accounts.middleware.BlacklistAccessTokenMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',   
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'datacode.urls'
@@ -191,10 +199,13 @@ LOGGING = {
 
     # Handlers
     'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+        'rotating_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'project.log'),
+            'maxBytes': 5*1024*1024,
+            'backupCount': 5,
+            'formatter': 'verbose',
         },
         'file': {
             'level': 'INFO',
@@ -213,17 +224,17 @@ LOGGING = {
     # Loggers
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
+            'handlers': ['rotating_file', 'file'],
             'level': 'INFO',
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['error_file'],
+            'handlers': ['rotating_file'],
             'level': 'ERROR',
             'propagate': False,
         },
         'accounts': { 
-            'handlers': ['console', 'file', 'error_file'],
+            'handlers': ['rotating_file', 'file', 'error_file'],
             'level': 'DEBUG',
             'propagate': False,
         },

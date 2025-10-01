@@ -12,6 +12,7 @@ from courses.serializers import CourseSerializer
 
 """ dj-rest-auth classes """
 from dj_rest_auth.serializers import UserDetailsSerializer, PasswordChangeSerializer
+from dj_rest_auth.registration.serializers import RegisterSerializer
 
 User = get_user_model()
 
@@ -66,37 +67,21 @@ class CustomUserPasswordChangeSerializer(PasswordChangeSerializer):
         if not user.check_password(value):
             raise serializers.ValidationError("Current password is incorrect")
         return value
-""" """
+    
 
+class CustomUserRegistrationSerializer(RegisterSerializer):
+    first_name = serializers.CharField(required=True, help_text="Enter your first name")
+    last_name = serializers.CharField(required=True, help_text="Enter your last name")
+    phone_number = serializers.CharField(required=True, max_length=15, help_text="Enter a valid phone number (max 15 digits)")
 
+    def custom_signup(self, request, user):
+        user.first_name = self.validated_data.get('first_name', '')
+        user.last_name = self.validated_data.get('last_name', '')
+        user.phone_number = self.validated_data.get('phone_number', '')
 
-class CustomUserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-    password_confirm = serializers.CharField(write_only=True)
-
-    class Meta:
-        model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'phone_number', 'password', 'password_confirm']
-
-    def validate(self, data):
-        if data['password'] != data['password_confirm']:
-            raise serializers.ValidationError('Password do not match.')
-        return data
-
-    def create(self, validated_data):
-        validated_data.pop('password_confirm')
-        role_instance = CustomRole.objects.get(role="student")
-        user = User(
-            username=validated_data['username'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            email=validated_data['email'],
-            phone_number=validated_data['phone_number'],
-            role=role_instance
-        )
-        user.set_password(validated_data['password'])
-        user.save()
+        user.save(update_fields=['first_name', 'last_name', 'phone_number'])
         return user
+""" """
 
 
 class UserNotificationsSerializer(serializers.ModelSerializer):
